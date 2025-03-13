@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Producer Terminal</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="terminal">
+        <!-- Audio Control -->
+        <div class="audio-control">
+            <div id="playButton" class="play-button">PRESS SPACE TO PLAY</div>
+            <div id="audioStatus" class="audio-status">AUDIO OFF</div>
+        </div>
+        
+        <!-- Terminal Content -->
+        <div class="content-container">
+            <div class="line-numbers"></div>
+            <div class="terminal-content">
+                <div class="header">
+                    <div class="line" data-index="1"># REDACT A CHAT</div>
+                    <div class="line" data-index="2"># CLOUD TEE</div>
+                    <div class="line" data-index="3"># MSCHF MATERIAL VALUES</div>
+                    <div class="line" data-index="4"># ROCK CANDY</div>
+                    <div class="line highlighted" data-index="5"># MADE BY MSCHF!↗</div>
+                </div>
+                <div class="input-prompt">
+                    <span class="prompt">>>> </span>
+                    <span class="input-text">ENTER E-MAIL:</span>
+                    <span class="cursor">_</span>
+                </div>
+                <div id="counter" class="counter">
+                    <div class="time-entry current">00:03:21:10:02 MON MAR 17 02PM ET</div>
+                    <div class="time-entry">08:06:21:10:02 THU MAY 15 02PM ET</div>
+                    <div class="time-entry">12:04:21:10:02 TUE JUN 10 02PM ET</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- YouTube API -->
+    <div id="player" style="display: none;"></div>
+
+    <!-- Scripts -->
+    <script src="scripts/animation.js"></script>
+    <script src="scripts/audio.js"></script>
+    <script src="scripts/cms.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+</html>
