@@ -1,0 +1,144 @@
+/* Terminal Base Styles */
+:root {
+    --bg-color: #000000;
+    --text-color: #cccccc;
+    --highlight-color: #ffdd00;
+    --prompt-color: #4fc3f7;
+    --timestamp-color: #ff0000;
+    --font-mono: 'Courier New', monospace;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    font-family: var(--font-mono);
+    color: var(--text-color);
+    line-height: 1.4;
+    overflow: hidden;
+    height: 100vh;
+}
+
+.terminal {
+    height: 100vh;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Audio Controls */
+.audio-control {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.play-button {
+    cursor: pointer;
+    background-color: var(--highlight-color);
+    color: var(--bg-color);
+    padding: 10px 15px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    user-select: none;
+}
+
+.audio-status {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* Terminal Content */
+.content-container {
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.line-numbers {
+    min-width: 40px;
+    padding-right: 10px;
+    text-align: right;
+    color: #555;
+}
+
+.terminal-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-bottom: 50px;
+}
+
+.line {
+    padding: 5px 0;
+    transition: transform 0.3s ease;
+}
+
+.highlighted {
+    color: var(--highlight-color);
+    font-weight: bold;
+}
+
+.input-prompt {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.prompt {
+    color: var(--prompt-color);
+}
+
+.input-text {
+    color: var(--prompt-color);
+}
+
+.cursor {
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.counter {
+    color: var(--timestamp-color);
+}
+
+.time-entry {
+    padding: 5px 0;
+    opacity: 0.6;
+}
+
+.time-entry.current {
+    opacity: 1;
+}
+
+/* Animation Classes */
+.crash-out {
+    transform: translateX(-100%);
+    opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.5s ease;
+}
+
+.slide-up {
+    transform: translateY(-100%);
+    transition: transform 0.5s ease;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .play-button {
+        padding: 15px;
+        width: 100%;
+        text-align: center;
+    }
+}
