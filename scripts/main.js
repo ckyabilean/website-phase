@@ -1,43 +1,196 @@
 /**
- * Main initialization
+ * Main initialization script
+ * Loads and coordinates all components
  */
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize components
-    Animation.init();
-    AudioController.init();
-    CMS.init();
+
+// Global state
+const APP = {
+    initialized: false,
+    audioConsented: false,
+    loginComplete: false
+};
+
+// Initialize everything when the DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize components in sequence
+    initAudioConsent();
     
-    // Add any additional initialization here
-    setupTerminal();
+    // Set up event listeners
+    setupEventListeners();
+    
+    // Start cursor blink
+    setInterval(blinkCursor, 500);
 });
 
 /**
- * Terminal setup
+ * Initial audio consent setup
  */
-function setupTerminal() {
-    // Add line numbers
-    generateLineNumbers();
+function initAudioConsent() {
+    const consentEl = document.getElementById('audioConsent');
+    const countdownEl = document.getElementById('countdown');
+    let timeLeft = 10;
     
-    // Add cursor blink
-    setInterval(blinkCursor, 500);
+    // Start countdown immediately
+    const countdownInterval = setInterval(() => {
+        timeLeft--;
+        countdownEl.textContent = timeLeft < 10 ? `00:0${timeLeft}` : `00:${timeLeft}`;
+        
+        if (timeLeft <= 0) {
+            clearInterval(countdownInterval);
+            // Force audio consent after countdown
+            handleAudioConsent();
+        }
+    }, 1000);
+    
+    // Listen for space key
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Space' && !APP.audioConsented) {
+            e.preventDefault();
+            clearInterval(countdownInterval);
+            handleAudioConsent();
+        }
+    });
+    
+    // Also allow click on text
+    consentEl.addEventListener('click', () => {
+        if (!APP.audioConsented) {
+            clearInterval(countdownInterval);
+            handleAudioConsent();
+        }
+    });
 }
 
 /**
- * Generate line numbers in the sidebar
+ * Handle audio consent confirmation
  */
-function generateLineNumbers() {
-    const linesContainer = document.querySelector('.terminal-content');
-    const lineNumbersContainer = document.querySelector('.line-numbers');
+function handleAudioConsent() {
+    APP.audioConsented = true;
     
-    if (!linesContainer || !lineNumbersContainer) return;
+    // Hide consent screen
+    const consentEl = document.getElementById('audioConsent');
+    consentEl.style.opacity = '0';
     
-    const lineCount = linesContainer.querySelectorAll('.line').length;
+    // After fade out, remove and show terminal
+    setTimeout(() => {
+        consentEl.style.display = 'none';
+        
+        // Show and activate terminal
+        const terminal = document.getElementById('terminal');
+        terminal.classList.add('active');
+        
+        // Start login sequence
+        startLoginSequence();
+        
+        // Initialize audio
+        AudioController.init();
+    }, 500);
+}
+
+/**
+ * Start the initial login sequence animation
+ */
+function startLoginSequence() {
+    const loginText = document.getElementById('loginText');
+    const promptText = document.getElementById('promptText');
     
-    for (let i = 1; i <= lineCount; i++) {
-        const lineNumber = document.createElement('div');
-        lineNumber.textContent = `#${i}`;
-        lineNumber.classList.add('line-number');
-        lineNumbersContainer.appendChild(lineNumber);
+    // Initial login text (typing effect handled by Animation module)
+    const loginLines = [
+        'TERMINAL v2.3.1 (c) 1993',
+        'CONNECTING TO SECURE SERVER...',
+        'CONNECTION ESTABLISHED',
+        'ACCESSING FILES...',
+        'LOGIN REQUIRED'
+    ];
+    
+    // Start typing animation
+    Animation.typeSequence(loginText, loginLines, 60, 500, () => {
+        // After login text, show prompt typing
+        setTimeout(() => {
+            Animation.typeText(promptText, 'ACCESS GRANTED', 80, () => {
+                // After typing completes, wait and then switch to main terminal
+                setTimeout(() => {
+                    completeLogin();
+                }, 1000);
+            });
+        }, 800);
+    });
+}
+
+/**
+ * Complete login and show main terminal
+ */
+function completeLogin() {
+    APP.loginComplete = true;
+    
+    // Hide login screen
+    document.getElementById('loginScreen').classList.add('hidden');
+    
+    // Show main terminal
+    document.getElementById('terminalContent').classList.remove('hidden');
+    
+    // Initialize terminal
+    Terminal.init();
+    
+    // Load content from CMS
+    CMS.init();
+    
+    // Start ticker
+    initTicker();
+}
+
+/**
+ * Initialize the stock ticker at the bottom
+ */
+function initTicker() {
+    const ticker = document.getElementById('ticker');
+    // Default ticker content (will be replaced by CMS)
+    ticker.innerHTML = 'WELCOME TO THE TERMINAL // MUSIC STREAMING LIVE 24/7 // USE HEADPHONES FOR BEST EXPERIENCE // PRESS SPACE TO MUTE/UNMUTE // EXPLORE THE SYSTEM //';
+}
+
+/**
+ * Set up global event listeners
+ */
+function setupEventListeners() {
+    // Command input handling
+    const commandInput = document.getElementById('commandInput');
+    if (commandInput) {
+        commandInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const command = commandInput.value.trim();
+                Terminal.processCommand(command);
+                commandInput.value = '';
+            }
+        });
+        
+        // Focus command input when clicking anywhere on terminal
+        document.getElementById('terminalContent').addEventListener('click', () => {
+            commandInput.focus();
+        });
+    }
+    
+    // Audio control events
+    document.getElementById('muteToggle').addEventListener('click', () => {
+        AudioController.toggleMute();
+    });
+    
+    document.getElementById('volumeUp').addEventListener('click', () => {
+        AudioController.changeVolume(0.1);
+    });
+    
+    document.getElementById('volumeDown').addEventListener('click', () => {
+        AudioController.changeVolume(-0.1);
+    });
+    
+    // Dialog box input handling
+    const dialogInput = document.getElementById('dialogInput');
+    if (dialogInput) {
+        dialogInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const answer = dialogInput.value.trim();
+                Terminal.processDialogAnswer(answer);
+                dialogInput.value = '';
+            }
+        });
     }
 }
 
@@ -45,8 +198,7 @@ function generateLineNumbers() {
  * Cursor blinking effect
  */
 function blinkCursor() {
-    const cursor = document.querySelector('.cursor');
-    if (cursor) {
+    document.querySelectorAll('.cursor').forEach(cursor => {
         cursor.style.opacity = cursor.style.opacity === '0' ? '1' : '0';
-    }
+    });
 }
