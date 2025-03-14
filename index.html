@@ -3,46 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Producer Terminal</title>
+    <title>Terminal Experience</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="terminal">
-        <!-- Audio Control -->
-        <div class="audio-control">
-            <div id="playButton" class="play-button">PRESS SPACE TO PLAY</div>
-            <div id="audioStatus" class="audio-status">AUDIO OFF</div>
+    <!-- CRT Screen Effect Overlays -->
+    <div class="crt-overlay">
+        <div class="scanlines"></div>
+        <div class="glare"></div>
+        <div class="reflection"></div>
+    </div>
+    
+    <!-- Audio Consent (Loads First) -->
+    <div id="audioConsent" class="audio-consent">
+        <div class="consent-text">PRESS SPACE TO INITIALIZE</div>
+        <div class="countdown" id="countdown">00:10</div>
+    </div>
+    
+    <!-- Main Terminal -->
+    <div class="terminal" id="terminal">
+        <!-- Initial Login Screen -->
+        <div id="loginScreen" class="login-screen">
+            <div class="login-text" id="loginText"></div>
+            <div class="prompt">
+                <span class="prompt-symbol">></span>
+                <span class="prompt-text" id="promptText"></span>
+                <span class="cursor">_</span>
+            </div>
         </div>
         
-        <!-- Terminal Content -->
-        <div class="content-container">
-            <div class="line-numbers"></div>
-            <div class="terminal-content">
-                <div class="header">
-                    <div class="line" data-index="1"># REDACT A CHAT</div>
-                    <div class="line" data-index="2"># CLOUD TEE</div>
-                    <div class="line" data-index="3"># MSCHF MATERIAL VALUES</div>
-                    <div class="line" data-index="4"># ROCK CANDY</div>
-                    <div class="line highlighted" data-index="5"># MADE BY MSCHF!↗</div>
-                </div>
-                <div class="input-prompt">
-                    <span class="prompt">>>> </span>
-                    <span class="input-text">ENTER E-MAIL:</span>
-                    <span class="cursor">_</span>
-                </div>
-                <div id="counter" class="counter">
-                    <div class="time-entry current">00:03:21:10:02 MON MAR 17 02PM ET</div>
-                    <div class="time-entry">08:06:21:10:02 THU MAY 15 02PM ET</div>
-                    <div class="time-entry">12:04:21:10:02 TUE JUN 10 02PM ET</div>
-                </div>
+        <!-- Main Terminal Content (Hidden Initially) -->
+        <div id="terminalContent" class="terminal-content hidden">
+            <div class="line-numbers" id="lineNumbers"></div>
+            <div class="content" id="content">
+                <!-- Dynamic content will be loaded here -->
+            </div>
+            
+            <!-- Command Input -->
+            <div class="command-line">
+                <span class="prompt-symbol">>></span>
+                <input type="text" id="commandInput" class="command-input" spellcheck="false">
+                <span class="cursor" id="inputCursor">_</span>
+            </div>
+        </div>
+        
+        <!-- Audio Controls -->
+        <div class="audio-controls">
+            <span class="audio-control" id="muteToggle">MUTE</span>
+            <span class="audio-control" id="volumeDown">VOL-</span>
+            <span class="audio-control" id="volumeUp">VOL+</span>
+        </div>
+        
+        <!-- Stock Ticker -->
+        <div class="ticker-wrapper">
+            <div class="ticker" id="ticker">
+                <!-- Ticker content will be loaded from CMS -->
             </div>
         </div>
     </div>
     
-    <!-- YouTube API -->
-    <div id="player" style="display: none;"></div>
-
+    <!-- Dialog Box (Hidden Initially) -->
+    <div id="dialogBox" class="dialog-box hidden">
+        <div class="dialog-title">SYSTEM</div>
+        <div class="dialog-content" id="dialogContent"></div>
+        <div class="dialog-input-wrapper">
+            <span class="prompt-symbol">></span>
+            <input type="text" id="dialogInput" class="dialog-input">
+        </div>
+    </div>
+    
+    <!-- YouTube API (Hidden) -->
+    <div id="player" style="position: absolute; left: -9999px;"></div>
+    
     <!-- Scripts -->
+    <script src="scripts/terminal.js"></script>
     <script src="scripts/animation.js"></script>
     <script src="scripts/audio.js"></script>
     <script src="scripts/cms.js"></script>
