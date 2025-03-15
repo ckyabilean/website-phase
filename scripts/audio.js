@@ -6,7 +6,7 @@ const AudioController = {
     isPlaying: false,
     isMuted: false,
     volume: 0.8,
-    // Use a real YT ID like this lofi beat channel as a placeholder
+    // Restore your original YouTube ID here
     videoId: 'jfKfPfyJRdk',
     
     /**
@@ -21,65 +21,83 @@ const AudioController = {
      * Load the YouTube iframe API
      */
     loadYouTubeAPI: function() {
-        const tag = document.createElement('script');
-        tag.src = 'https://www.youtube.com/iframe_api';
-        
-        const firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-        
-        // YouTube API will call this when loaded
-        window.onYouTubeIframeAPIReady = this.createPlayer.bind(this);
+        try {
+            const tag = document.createElement('script');
+            tag.src = 'https://www.youtube.com/iframe_api';
+            
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            
+            // YouTube API will call this when loaded
+            window.onYouTubeIframeAPIReady = this.createPlayer.bind(this);
+        } catch (error) {
+            console.error('Error loading YouTube API:', error);
+            // Continue with site functionality even if YouTube fails
+        }
     },
     
     /**
      * Create the YouTube player
      */
     createPlayer: function() {
-        this.player = new YT.Player('player', {
-            width: '1',
-            height: '1',
-            videoId: this.videoId,
-            playerVars: {
-                autoplay: 1,
-                controls: 0,
-                disablekb: 1,
-                fs: 0,
-                iv_load_policy: 3,
-                modestbranding: 1,
-                rel: 0
-            },
-            events: {
-                'onReady': this.onPlayerReady.bind(this),
-                'onStateChange': this.onPlayerStateChange.bind(this),
-                'onError': this.onPlayerError.bind(this)
-            }
-        });
+        try {
+            this.player = new YT.Player('player', {
+                width: '1',
+                height: '1',
+                videoId: this.videoId,
+                playerVars: {
+                    autoplay: 1,
+                    controls: 0,
+                    disablekb: 1,
+                    fs: 0,
+                    iv_load_policy: 3,
+                    modestbranding: 1,
+                    rel: 0
+                },
+                events: {
+                    'onReady': this.onPlayerReady.bind(this),
+                    'onStateChange': this.onPlayerStateChange.bind(this),
+                    'onError': this.onPlayerError.bind(this)
+                }
+            });
+        } catch (error) {
+            console.error('Error creating YouTube player:', error);
+            // Continue with site functionality
+        }
     },
     
     /**
      * Handle player ready event
      */
     onPlayerReady: function(event) {
-        console.log('YouTube player ready');
-        this.player.setVolume(this.volume * 100);
-        this.player.playVideo();
-        this.isPlaying = true;
-        this.updateControls();
+        try {
+            console.log('YouTube player ready');
+            this.player.setVolume(this.volume * 100);
+            this.player.playVideo();
+            this.isPlaying = true;
+            this.updateControls();
+        } catch (error) {
+            console.error('Error in player ready:', error);
+        }
     },
     
     /**
      * Handle player state changes
      */
     onPlayerStateChange: function(event) {
-        // YT.PlayerState.PLAYING = 1
-        // YT.PlayerState.PAUSED = 2
-        if (event.data === YT.PlayerState.PLAYING) {
-            this.isPlaying = true;
-        } else if (event.data === YT.PlayerState.PAUSED) {
-            this.isPlaying = false;
+        try {
+            // YT.PlayerState.PLAYING = 1
+            // YT.PlayerState.PAUSED = 2
+            if (event.data === YT.PlayerState.PLAYING) {
+                this.isPlaying = true;
+            } else if (event.data === YT.PlayerState.PAUSED) {
+                this.isPlaying = false;
+            }
+            
+            this.updateControls();
+        } catch (error) {
+            console.error('Error in state change:', error);
         }
-        
-        this.updateControls();
     },
     
     /**
@@ -87,7 +105,7 @@ const AudioController = {
      */
     onPlayerError: function(event) {
         console.error('YouTube player error:', event.data);
-        // Don't show error message in UI, just silently fail
+        // Silently fail - don't show visible errors
     },
     
     /**
@@ -96,15 +114,19 @@ const AudioController = {
     toggleMute: function() {
         if (!this.player) return;
         
-        if (this.isMuted) {
-            this.player.unMute();
-            this.isMuted = false;
-        } else {
-            this.player.mute();
-            this.isMuted = true;
+        try {
+            if (this.isMuted) {
+                this.player.unMute();
+                this.isMuted = false;
+            } else {
+                this.player.mute();
+                this.isMuted = true;
+            }
+            
+            this.updateControls();
+        } catch (error) {
+            console.error('Error toggling mute:', error);
         }
-        
-        this.updateControls();
     },
     
     /**
@@ -114,16 +136,20 @@ const AudioController = {
     changeVolume: function(delta) {
         if (!this.player) return;
         
-        this.volume = Math.max(0, Math.min(1, this.volume + delta));
-        this.player.setVolume(this.volume * 100);
-        
-        // If changing volume while muted, unmute
-        if (this.isMuted && delta > 0) {
-            this.player.unMute();
-            this.isMuted = false;
+        try {
+            this.volume = Math.max(0, Math.min(1, this.volume + delta));
+            this.player.setVolume(this.volume * 100);
+            
+            // If changing volume while muted, unmute
+            if (this.isMuted && delta > 0) {
+                this.player.unMute();
+                this.isMuted = false;
+            }
+            
+            this.updateControls();
+        } catch (error) {
+            console.error('Error changing volume:', error);
         }
-        
-        this.updateControls();
     },
     
     /**
