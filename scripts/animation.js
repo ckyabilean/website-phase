@@ -9,7 +9,7 @@ const Animation = {
      * @param {number} speed - Typing speed in ms
      * @param {Function} callback - Optional callback when complete
      */
-    typeText: function(element, text, speed = 50, callback = null) {
+    typeText: function(element, text, speed = 80, callback = null) {
         let i = 0;
         element.textContent = '';
         
