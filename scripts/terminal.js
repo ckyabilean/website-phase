@@ -150,6 +150,7 @@ const Terminal = {
         }
         
         // Re-display the tracks from CMS
+        Animation.addScrollingLine('# MEDIA', 'h2');
         CMS.displayTracks();
     },
     
