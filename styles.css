@@ -7,7 +7,7 @@
     --link-color: #4fc3f7;
     --warning-color: #ff5555;
     --font-main: 'Courier New', monospace;
-    --font-size-base: 1rem;
+    --font-size-base: 1.5rem;
     --glow: 0 0 2px rgba(51, 255, 51, 0.7);
 }
 
@@ -69,7 +69,7 @@ body {
         rgba(255, 255, 255, 0) 60%
     );
     z-index: 1002;
-    opacity: 0.5;
+    opacity: 0.85;
     pointer-events: none;
 }
 
@@ -86,9 +86,9 @@ body {
     );
     z-index: 1003;
     border-radius: 50%;
-    filter: blur(5px);
+    filter: blur(10px);
     transform: skew(-10deg, 5deg);
-    opacity: 0.1;
+    opacity: 0.35;
     animation: subtle-move 20s infinite alternate;
 }
 
