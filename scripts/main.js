@@ -12,7 +12,7 @@ const APP = {
 
 // Initialize everything when the DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize components in sequence
+    // Show audio consent immediately
     initAudioConsent();
     
     // Set up event listeners
@@ -20,6 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Start cursor blink
     setInterval(blinkCursor, 500);
+    
+    // Initialize CMS immediately so content loads regardless of audio state
+    CMS.init();
 });
 
 /**
@@ -29,6 +32,9 @@ function initAudioConsent() {
     const consentEl = document.getElementById('audioConsent');
     const countdownEl = document.getElementById('countdown');
     let timeLeft = 10;
+    
+    // Make sure consent is visible immediately
+    consentEl.style.display = 'flex';
     
     // Start countdown immediately
     const countdownInterval = setInterval(() => {
@@ -66,24 +72,22 @@ function initAudioConsent() {
 function handleAudioConsent() {
     APP.audioConsented = true;
     
-    // Hide consent screen
+    // Hide consent screen immediately
     const consentEl = document.getElementById('audioConsent');
-    consentEl.style.opacity = '0';
+    consentEl.style.display = 'none';
     
-    // After fade out, remove and show terminal
-    setTimeout(() => {
-        consentEl.style.display = 'none';
-        
-        // Show and activate terminal
-        const terminal = document.getElementById('terminal');
-        terminal.classList.add('active');
-        
-        // Start login sequence
-        startLoginSequence();
-        
-        // Initialize audio
-        AudioController.init();
-    }, 500);
+    // Show and activate terminal immediately
+    const terminal = document.getElementById('terminal');
+    terminal.classList.add('active');
+    
+    // Start login sequence
+    startLoginSequence();
+    
+    // Initialize audio
+    AudioController.init();
+    
+    // Start ticker
+    initTicker();
 }
 
 /**
@@ -102,17 +106,18 @@ function startLoginSequence() {
         'DISPLAYING CONTENT'
     ];
     
+    // Show login screen
+    document.getElementById('loginScreen').classList.remove('hidden');
+    
     // Start typing animation
-    Animation.typeSequence(loginText, loginLines, 80, 500, () => {
+    Animation.typeSequence(loginText, loginLines, 80, 300, () => {
         // After login text, show prompt typing
         setTimeout(() => {
             Animation.typeText(promptText, 'WELCOME', 100, () => {
-                // After typing completes, wait and then switch to main terminal
-                setTimeout(() => {
-                    completeLogin();
-                }, 1000);
+                // After typing completes, switch to main terminal immediately
+                completeLogin();
             });
-        }, 800);
+        }, 300);
     });
 }
 
@@ -127,12 +132,6 @@ function completeLogin() {
     
     // Show main terminal
     document.getElementById('terminalContent').classList.remove('hidden');
-    
-    // Initialize content display directly
-    CMS.init();
-    
-    // Start ticker
-    initTicker();
 }
 
 /**
@@ -187,6 +186,8 @@ function showEasterEgg() {
     dialogBox.classList.remove('hidden');
     
     const dialogInput = document.getElementById('dialogInput');
+    setTimeout(() => dialogInput.focus(), 100);
+    
     dialogInput.addEventListener('keydown', function onEnter(e) {
         if (e.key === 'Enter') {
             const answer = dialogInput.value.trim().toLowerCase();
