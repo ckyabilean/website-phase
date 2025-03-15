@@ -6,7 +6,8 @@ const AudioController = {
     isPlaying: false,
     isMuted: false,
     volume: 0.8,
-    videoId: 'YOUR_YOUTUBE_LIVESTREAM_ID', // Replace with actual ID
+    // Use a real YT ID like this lofi beat channel as a placeholder
+    videoId: 'jfKfPfyJRdk',
     
     /**
      * Initialize the audio controller
@@ -72,9 +73,9 @@ const AudioController = {
     onPlayerStateChange: function(event) {
         // YT.PlayerState.PLAYING = 1
         // YT.PlayerState.PAUSED = 2
-        if (event.data === 1) {
+        if (event.data === YT.PlayerState.PLAYING) {
             this.isPlaying = true;
-        } else if (event.data === 2) {
+        } else if (event.data === YT.PlayerState.PAUSED) {
             this.isPlaying = false;
         }
         
@@ -86,10 +87,7 @@ const AudioController = {
      */
     onPlayerError: function(event) {
         console.error('YouTube player error:', event.data);
-        
-        // Create a fallback notification
-        const line = Animation.addScrollingLine('ERROR: AUDIO STREAM NOT AVAILABLE');
-        line.style.color = 'var(--warning-color)';
+        // Don't show error message in UI, just silently fail
     },
     
     /**
@@ -137,7 +135,5 @@ const AudioController = {
         if (muteEl) {
             muteEl.textContent = this.isMuted ? 'UNMUTE' : 'MUTE';
         }
-        
-        // Could add volume indicator if needed
     }
 };
