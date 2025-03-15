@@ -95,18 +95,18 @@ function startLoginSequence() {
     
     // Initial login text (typing effect handled by Animation module)
     const loginLines = [
-        'TERMINAL v2.3.1 (c) 1993',
-        'CONNECTING TO SECURE SERVER...',
-        'CONNECTION ESTABLISHED',
-        'ACCESSING FILES...',
-        'LOGIN REQUIRED'
+        'SYSTEM INITIALIZING...',
+        'ACCESSING MEDIA ARCHIVE...',
+        'SECURITY PROTOCOLS BYPASSED',
+        'UNAUTHORIZED ACCESS GRANTED',
+        'DISPLAYING CONTENT'
     ];
     
     // Start typing animation
-    Animation.typeSequence(loginText, loginLines, 60, 500, () => {
+    Animation.typeSequence(loginText, loginLines, 80, 500, () => {
         // After login text, show prompt typing
         setTimeout(() => {
-            Animation.typeText(promptText, 'ACCESS GRANTED', 80, () => {
+            Animation.typeText(promptText, 'WELCOME', 100, () => {
                 // After typing completes, wait and then switch to main terminal
                 setTimeout(() => {
                     completeLogin();
@@ -128,10 +128,7 @@ function completeLogin() {
     // Show main terminal
     document.getElementById('terminalContent').classList.remove('hidden');
     
-    // Initialize terminal
-    Terminal.init();
-    
-    // Load content from CMS
+    // Initialize content display directly
     CMS.init();
     
     // Start ticker
@@ -144,27 +141,24 @@ function completeLogin() {
 function initTicker() {
     const ticker = document.getElementById('ticker');
     // Default ticker content (will be replaced by CMS)
-    ticker.innerHTML = 'WELCOME TO THE TERMINAL // MUSIC STREAMING LIVE 24/7 // USE HEADPHONES FOR BEST EXPERIENCE // PRESS SPACE TO MUTE/UNMUTE // EXPLORE THE SYSTEM //';
+    ticker.innerHTML = 'WELCOME TO THE ARCHIVE // UNRELEASED CONTENT AVAILABLE // USE HEADPHONES FOR BEST EXPERIENCE // PRESS SPACE TO MUTE/UNMUTE // SYSTEM ONLINE SINCE 2006 //';
 }
 
 /**
  * Set up global event listeners
  */
 function setupEventListeners() {
-    // Command input handling
+    // Command input handling - only for easter egg
     const commandInput = document.getElementById('commandInput');
     if (commandInput) {
         commandInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 const command = commandInput.value.trim();
-                Terminal.processCommand(command);
+                if (command === '2006') {
+                    showEasterEgg();
+                }
                 commandInput.value = '';
             }
-        });
-        
-        // Focus command input when clicking anywhere on terminal
-        document.getElementById('terminalContent').addEventListener('click', () => {
-            commandInput.focus();
         });
     }
     
@@ -180,18 +174,42 @@ function setupEventListeners() {
     document.getElementById('volumeDown').addEventListener('click', () => {
         AudioController.changeVolume(-0.1);
     });
+}
+
+/**
+ * Show easter egg content
+ */
+function showEasterEgg() {
+    const dialogBox = document.getElementById('dialogBox');
+    const dialogContent = document.getElementById('dialogContent');
     
-    // Dialog box input handling
+    dialogContent.textContent = 'WHAT GETS BIGGER THE MORE YOU TAKE AWAY?';
+    dialogBox.classList.remove('hidden');
+    
     const dialogInput = document.getElementById('dialogInput');
-    if (dialogInput) {
-        dialogInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const answer = dialogInput.value.trim();
-                Terminal.processDialogAnswer(answer);
-                dialogInput.value = '';
+    dialogInput.addEventListener('keydown', function onEnter(e) {
+        if (e.key === 'Enter') {
+            const answer = dialogInput.value.trim().toLowerCase();
+            dialogBox.classList.add('hidden');
+            
+            // Check answer
+            if (answer === 'hole') {
+                // Show success in content
+                const contentEl = document.getElementById('content');
+                const successLine = document.createElement('div');
+                successLine.classList.add('line');
+                successLine.textContent = 'ACCESS GRANTED: UNLOCKING HIDDEN CONTENT';
+                successLine.style.color = 'var(--highlight)';
+                contentEl.appendChild(successLine);
+                
+                // Reveal hidden content
+                CMS.revealHiddenContent();
             }
-        });
-    }
+            
+            // Remove event listener
+            dialogInput.removeEventListener('keydown', onEnter);
+        }
+    });
 }
 
 /**
