@@ -11,10 +11,10 @@ const CMS = {
      * Initialize the CMS
      */
     init: function() {
-        // For development, use mock data first
+        // Load mock data immediately
         this.loadMockData();
         
-        // In production, load from Google Sheets
+        // In production, use this instead:
         // this.loadSheetData();
     },
     
@@ -56,7 +56,7 @@ const CMS = {
         
         const headers = values[0];
         const result = {
-            tracks: [],
+            items: [],
             ticker: '',
             riddle: { question: '', answer: '', reward: '' }
         };
@@ -70,9 +70,9 @@ const CMS = {
                 item[headers[j]] = row[j];
             }
             
-            // Special handling for track items
-            if (item.type === 'track') {
-                result.tracks.push({
+            // Special handling for content items
+            if (item.type === 'item') {
+                result.items.push({
                     title: item.title || '',
                     url: item.url || '#',
                     visible: item.visible === 'TRUE'
@@ -101,58 +101,57 @@ const CMS = {
     updateTerminalContent: function() {
         if (!this.data) return;
         
-        // Update tracks list
-        this.displayTracks();
+        // Display content items
+        this.displayContent();
         
         // Update ticker
         this.updateTicker();
     },
     
     /**
-     * Display track list from CMS
+     * Display content items from CMS
      */
-    displayTracks: function() {
-        if (!this.data || !this.data.tracks) return;
+    displayContent: function() {
+        if (!this.data || !this.data.items) return;
         
         const contentEl = document.getElementById('content');
         contentEl.innerHTML = '';
         
         // Add header
-        Animation.addScrollingLine('# TRACKLIST', 'h2');
+        const headerLine = document.createElement('div');
+        headerLine.classList.add('line');
+        headerLine.textContent = '# MEDIA ARCHIVE';
+        headerLine.style.color = 'var(--highlight)';
+        headerLine.style.marginBottom = '1rem';
+        contentEl.appendChild(headerLine);
         
-        // Add each track
-        this.data.tracks.forEach((track, index) => {
+        // Add each content item
+        this.data.items.forEach((item) => {
             const line = document.createElement('div');
             line.classList.add('line');
             
-            // For visible tracks, show title with link
-            if (track.visible) {
-                // Create track number
-                const trackNum = document.createElement('span');
-                trackNum.textContent = `${index + 1}. `;
-                line.appendChild(trackNum);
-                
+            // For visible items, show title with link
+            if (item.visible) {
                 // Create link if URL exists
-                if (track.url && track.url !== '#') {
+                if (item.url && item.url !== '#') {
                     const link = document.createElement('a');
-                    link.href = track.url;
-                    link.textContent = track.title;
+                    link.href = item.url;
+                    link.textContent = item.title;
                     link.target = '_blank';
                     line.appendChild(link);
                 } else {
                     // Just text if no URL
                     const titleSpan = document.createElement('span');
-                    titleSpan.textContent = track.title;
+                    titleSpan.textContent = item.title;
                     line.appendChild(titleSpan);
                 }
             } 
-            // No track numbers mane
-            
-                
+            // For hidden items, show placeholders
+            else {
                 // Create placeholder (underscores matching length of title)
                 const placeholder = document.createElement('span');
                 placeholder.classList.add('placeholder');
-                placeholder.textContent = '_'.repeat(Math.max(5, track.title.length));
+                placeholder.textContent = '_'.repeat(Math.max(5, item.title.length));
                 line.appendChild(placeholder);
             }
             
@@ -179,8 +178,8 @@ const CMS = {
     getRiddle: function() {
         if (!this.data || !this.data.riddle) {
             return { 
-                question: 'WHAT IS YOUR FAVORITE COLOR?', 
-                answer: 'blue', 
+                question: 'WHAT GETS BIGGER THE MORE YOU TAKE AWAY?', 
+                answer: 'hole', 
                 reward: 'ACCESS GRANTED' 
             };
         }
@@ -189,21 +188,59 @@ const CMS = {
     },
     
     /**
+     * Reveal hidden content (for easter egg)
+     */
+    revealHiddenContent: function() {
+        if (!this.data || !this.data.items) return;
+        
+        // Find a random hidden item
+        const hiddenItems = this.data.items.filter(item => !item.visible);
+        if (hiddenItems.length > 0) {
+            const randomIndex = Math.floor(Math.random() * hiddenItems.length);
+            const randomItem = hiddenItems[randomIndex];
+            
+            // Find this item in the original array
+            const itemIndex = this.data.items.findIndex(item => 
+                item.title === randomItem.title && !item.visible);
+            
+            if (itemIndex !== -1) {
+                // Mark as visible
+                this.data.items[itemIndex].visible = true;
+                
+                // Re-display content
+                this.displayContent();
+            }
+        }
+    },
+    
+    /**
      * Load mock data for development
      */
     loadMockData: function() {
         this.data = {
-            tracks: [
-                { title: 'STATIC NOISE', url: '#', visible: true },
-                { title: 'MIDNIGHT DRIVE', url: 'https://example.com', visible: true },
-                { title: 'DARK MATTER', url: 'https://example.com', visible: false },
-                { title: 'ECHO CHAMBER', url: 'https://example.com', visible: true },
-                { title: 'DIGITAL DREAMS', url: 'https://example.com', visible: true },
-                { title: 'VOID WALKER', url: '#', visible: false },
-                { title: 'SYSTEM FAILURE', url: 'https://example.com', visible: true },
-                { title: 'LOST SIGNAL', url: 'https://example.com', visible: false }
+            items: [
+                { title: 'INTERVIEW: ROLLING STONE 2023', url: '#', visible: true },
+                { title: 'ALBUM COVER OUTTAKES', url: 'https://example.com', visible: true },
+                { title: 'STUDIO SESSION: LONDON', url: 'https://example.com', visible: true },
+                { title: 'UNRELEASED MUSIC VIDEO', url: 'https://example.com', visible: true },
+                { title: 'SYNTH COLLECTION', url: '#', visible: true },
+                { title: 'SAMPLE PACK RELEASE', url: 'https://example.com', visible: true },
+                { title: 'BERLIN LIVE SET', url: 'https://example.com', visible: true },
+                { title: 'UNDERGROUND RADIO MIX', url: '#', visible: true },
+                { title: 'MODULAR SETUP GUIDE', url: 'https://example.com', visible: true },
+                { title: 'BACKSTAGE PHOTOS', url: 'https://example.com', visible: true },
+                { title: 'STUDIO WALKTHROUGH', url: '#', visible: true },
+                { title: 'COLLAB WITH APHEX TWIN', url: 'https://example.com', visible: false },
+                { title: 'UNRELEASED REMIXES', url: 'https://example.com', visible: false },
+                { title: 'HARDWARE SCHEMATICS', url: 'https://example.com', visible: true },
+                { title: 'SECRET SHOW FOOTAGE', url: 'https://example.com', visible: false },
+                { title: 'DOCUMENTARY PREVIEW', url: '#', visible: true },
+                { title: 'HANDWRITTEN LYRICS', url: 'https://example.com', visible: true },
+                { title: 'FESTIVAL AFTERMOVIE', url: 'https://example.com', visible: true },
+                { title: 'PRODUCTION MASTERCLASS', url: 'https://example.com', visible: true },
+                { title: 'RARE INTERVIEW FOOTAGE', url: '#', visible: false }
             ],
-            ticker: 'WELCOME TO THE TERMINAL // MUSIC STREAMING LIVE 24/7 // USE HEADPHONES FOR BEST EXPERIENCE // NEXT DROP: 03.21.25 // EXPLORE THE SYSTEM // FIND THE HIDDEN TRACKS // STAY TUNED // SYSTEM ONLINE SINCE 2006 //',
+            ticker: 'WELCOME TO THE ARCHIVE // UNRELEASED CONTENT AVAILABLE // USE HEADPHONES FOR BEST EXPERIENCE // PRESS SPACE TO MUTE/UNMUTE // SYSTEM ONLINE SINCE 2006 // SECRET CONTENT HIDDEN SOMEWHERE // KEEP EXPLORING //',
             riddle: {
                 question: 'WHAT GETS BIGGER THE MORE YOU TAKE AWAY?',
                 answer: 'hole',
@@ -213,10 +250,8 @@ const CMS = {
         
         this.loadingComplete = true;
         
-        // Small delay to simulate loading
-        setTimeout(() => {
-            this.updateTerminalContent();
-        }, 1500);
+        // Update content immediately
+        this.updateTerminalContent();
     }
 };
 
