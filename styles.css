@@ -6,7 +6,7 @@
     --highlight: #ffdd00;
     --link-color: #4fc3f7;
     --warning-color: #ff5555;
-    --font-main: 'Courier New', monospace;
+    --font-mono: 'Courier New', monospace;
     --font-size-base: 1.5rem;
     --glow: 0 0 2px rgba(51, 255, 51, 0.7);
 }
@@ -21,13 +21,14 @@
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
-    font-family: var(--font-main);
+    font-family: var(--font-mono);
     line-height: 1.4;
     overflow: hidden;
     position: relative;
     height: 100vh;
     width: 100vw;
     text-shadow: var(--glow);
+    text-transform: uppercase;
 }
 
 /* CRT Screen Effects */
@@ -50,7 +51,7 @@ body {
     background: linear-gradient(
         to bottom,
         rgba(0, 0, 0, 0) 0%,
-        rgba(0, 0, 0, 0.1) 50%,
+        rgba(0, 0, 0, 0.3) 50%,
         rgba(0, 0, 0, 0) 100%
     );
     background-size: 100% 2px;
@@ -65,30 +66,30 @@ body {
     height: 100%;
     background: radial-gradient(
         ellipse at center,
-        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.1) 0%,
         rgba(255, 255, 255, 0) 60%
     );
     z-index: 1002;
-    opacity: 0.85;
+    opacity: 0.8;
     pointer-events: none;
 }
 
 .reflection {
     position: absolute;
-    top: 10%;
-    right: 10%;
-    width: 20%;
-    height: 50%;
+    top: 30%;
+    right: 5%;
+    width: 30%;
+    height: 40%;
     background: radial-gradient(
         ellipse at center,
-        rgba(255, 255, 255, 0.02) 0%,
+        rgba(255, 255, 255, 0.05) 0%,
         rgba(255, 255, 255, 0) 70%
     );
     z-index: 1003;
     border-radius: 50%;
     filter: blur(10px);
     transform: skew(-10deg, 5deg);
-    opacity: 0.35;
+    opacity: 0.3;
     animation: subtle-move 20s infinite alternate;
 }
 
@@ -113,14 +114,14 @@ body {
 }
 
 .consent-text {
-    font-size: 2rem;
-    margin-bottom: 1rem;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
     letter-spacing: 2px;
     animation: blink 1s infinite;
 }
 
 .countdown {
-    font-size: 1.5rem;
+    font-size: 2rem;
     color: var(--warning-color);
 }
 
@@ -152,11 +153,13 @@ body {
 .login-text {
     margin-bottom: 1rem;
     white-space: pre-wrap;
+    font-size: 1.75rem;
 }
 
 .prompt {
     display: flex;
     align-items: center;
+    font-size: 2rem;
 }
 
 .prompt-symbol {
@@ -191,17 +194,20 @@ body {
     text-align: right;
     padding-right: 0.5rem;
     color: rgba(51, 255, 51, 0.5);
+    font-size: 1.25rem;
 }
 
 .content {
     flex-grow: 1;
     overflow-y: auto;
     padding-bottom: 3rem;
+    font-size: 1.75rem;
+    letter-spacing: 1px;
 }
 
 /* Terminal Lines */
 .line {
-    padding: 0.3rem 0;
+    padding: 0.5rem 0;
     position: relative;
     transition: letter-spacing 0.3s ease;
     overflow: hidden;
@@ -210,13 +216,13 @@ body {
 
 .line:hover {
     color: var(--highlight);
-    letter-spacing: 1px;
+    letter-spacing: 2px;
 }
 
 .line a {
     color: var(--link-color);
     text-decoration: underline;
-    text-underline-offset: 2px;
+    text-underline-offset: 3px;
 }
 
 .line a:hover {
@@ -242,6 +248,7 @@ body {
     align-items: center;
     margin-top: 1rem;
     position: relative;
+    font-size: 1.5rem;
 }
 
 .command-input {
@@ -249,12 +256,13 @@ body {
     border: none;
     color: var(--text-color);
     font-family: var(--font-main);
-    font-size: var(--font-size-base);
+    font-size: 1.5rem;
     margin-left: 0.5rem;
     padding: 0;
     width: calc(100% - 2rem);
     caret-color: transparent;
     text-shadow: var(--glow);
+    text-transform: uppercase;
 }
 
 .command-input:focus {
@@ -267,8 +275,9 @@ body {
     bottom: 2rem;
     right: 2rem;
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
     z-index: 100;
+    font-size: 1.5rem;
 }
 
 .audio-control {
@@ -290,15 +299,16 @@ body {
     left: 0;
     width: 100%;
     overflow: hidden;
-    height: 1.5rem;
+    height: 2rem;
     border-top: 1px solid rgba(51, 255, 51, 0.3);
 }
 
 .ticker {
     white-space: nowrap;
     display: inline-block;
-    animation: ticker 20s linear infinite;
+    animation: ticker 30s linear infinite;
     padding-right: 100%;
+    font-size: 1.25rem;
 }
 
 @keyframes ticker {
@@ -315,26 +325,28 @@ body {
     background-color: var(--bg-color);
     border: 1px solid var(--text-color);
     width: 80%;
-    max-width: 600px;
+    max-width: 800px;
     z-index: 3000;
     box-shadow: 0 0 20px rgba(51, 255, 51, 0.3);
+    font-size: 1.5rem;
 }
 
 .dialog-title {
-    padding: 0.5rem;
+    padding: 0.5rem 1rem;
     background-color: var(--text-color);
     color: var(--bg-color);
     font-weight: bold;
 }
 
 .dialog-content {
-    padding: 1rem;
+    padding: 2rem;
     min-height: 100px;
+    text-align: center;
 }
 
 .dialog-input-wrapper {
     display: flex;
-    padding: 0.5rem 1rem;
+    padding: 1rem 2rem;
     border-top: 1px solid rgba(51, 255, 51, 0.3);
 }
 
@@ -342,11 +354,12 @@ body {
     background: transparent;
     border: none;
     color: var(--text-color);
-    font-family: var(--font-main);
-    font-size: var(--font-size-base);
+    font-family: var(--font-mono);
+    font-size: 1.5rem;
     width: 100%;
     margin-left: 0.5rem;
     text-shadow: var(--glow);
+    text-transform: uppercase;
 }
 
 .dialog-input:focus {
@@ -379,19 +392,24 @@ body {
 /* Media Queries for Responsive Design */
 @media (max-width: 768px) {
     :root {
-        --font-size-base: 0.875rem;
+        --font-size-base: 1.25rem;
     }
     
     .terminal {
         padding: 1rem;
     }
     
-    .consent-text {
+    .content {
         font-size: 1.5rem;
     }
     
+    .consent-text {
+        font-size: 1.75rem;
+    }
+    
     .audio-controls {
-        bottom: 3rem;
+        bottom: 4rem;
+        font-size: 1.25rem;
     }
 }
 
