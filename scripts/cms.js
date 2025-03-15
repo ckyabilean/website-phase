@@ -146,11 +146,8 @@ const CMS = {
                     line.appendChild(titleSpan);
                 }
             } 
-            // For hidden tracks, show placeholders
-            else {
-                const trackNum = document.createElement('span');
-                trackNum.textContent = `${index + 1}. `;
-                line.appendChild(trackNum);
+            // No track numbers mane
+            
                 
                 // Create placeholder (underscores matching length of title)
                 const placeholder = document.createElement('span');
