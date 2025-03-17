@@ -14,14 +14,16 @@
         <div class="reflection"></div>
     </div>
     
-    <!-- Audio Consent (Loads First) -->
+    <!-- Audio Consent (Loads First - Overlay Style) -->
     <div id="audioConsent" class="audio-consent">
-        <div class="consent-text">PRESS SPACE TO INITIALIZE</div>
-        <div class="countdown" id="countdown">00:10</div>
+        <div class="consent-container">
+            <div class="consent-text">PRESS SPACE TO CONTINUE</div>
+            <div class="countdown" id="countdown">00:10</div>
+        </div>
     </div>
     
-    <!-- Main Terminal -->
-    <div class="terminal" id="terminal">
+    <!-- Main Terminal (Starts Loading Immediately) -->
+    <div class="terminal active" id="terminal">
         <!-- Initial Login Screen -->
         <div id="loginScreen" class="login-screen">
             <div class="login-text" id="loginText"></div>
